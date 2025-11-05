@@ -2,14 +2,24 @@
 import pandas as pd
 
 #%%
-df = pd.read_excel("../dados/base_denis.xlsx")
+pd.options.display.float_format = "{:.2f}".format
+
+#%%
+df = pd.read_excel("../dados/Base_Despesas.xlsx")
 df.head()
 
 #%%
 df.info()
 
 #%%
-# Etapa 1
+############################Etapa_0############################
+# Analise da etapa zero
+
+df["COD_ELEMENTO"] = df["COD_ELEMENTO"].astype(str).str.zfill(2)
+df.head()
+
+#%%
+############################Etapa_1############################
 
 df["ANOMES"] = pd.to_datetime(df["ANOMES"], format="%Y%m", errors="coerce")
 df.head()
@@ -19,6 +29,7 @@ df = df.rename(columns={"ANOMES" : "DATA"})
 df.head()
 
 #%%
+# ===================================Etapa_2==============================
 # Etapa 2 - Criar coluna do cod_grupo
 
 df["COD_GRUPO"] = None
@@ -50,7 +61,6 @@ df.tail(10)
 
 #%%
 df["RPPS"].unique()
-
 
 
 #%%
@@ -108,6 +118,9 @@ df.head()
 
 #%%
 # Etapa 7
+df["PAGO_EXERCICIO_ANTERIOR"] = df["PAGO_EXERCICIO_ANTERIOR"].fillna(0)
+
+#%%
 df["TOTAL PAGO"] = df["PAGO"] + df["PAGO_EXERCICIO_ANTERIOR"]
 df.head()
 
@@ -148,5 +161,30 @@ tabela["VAR $"] = tabela[2025] - tabela[2024]
 tabela
 
 #%%
-tabela['VAR. %'] = (tabela["VAR $"] / tabela[2024] * 100).round(2)
+tabela['VAR. %'] = tabela['VAR $'] / tabela[2024] * 100
 tabela
+
+#%%
+meses = {1: 'jan', 2: 'fev', 3: 'mar', 4: 'abr', 5: 'mai', 6: 'jun', 
+         7: 'jul', 8: 'ago', 9: 'set', 10: 'out', 11: 'nov', 12: 'dez'}
+
+#%%
+tabela.index = tabela.index.map(meses)
+tabela.index
+
+#%%
+total_2024 = tabela[2024].sum()
+total_2025 = tabela[2025].sum()
+
+#%%
+total_variacao_rs = tabela["VAR $"].sum()
+total_variacao = (total_variacao_rs / total_2024) * 100
+
+#%%
+tabela.loc["Total"] = [total_2024, total_2025, total_variacao_rs, total_variacao]
+
+#%%
+tabela
+
+#%%
+tabela.to_excel("base.xlsx")
