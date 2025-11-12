@@ -26,7 +26,7 @@ df.info()
 
 #%%
 #===============================Etapa 2=====================================
-codigo_rpps = [1801261, 2801261, 1802262, 2802262, 1802202, 2802202]     
+codigo_rpps = [1801261, 2801261, 1800262, 2802262, 1802202, 2802202]     
 
 df["RPPS"] = "Não"
 
@@ -40,7 +40,8 @@ df["RPPS"].value_counts()
 #===============================Etapa 3=====================================
 # 1321%; 2230%; 21%; 23%; 1990111%; 1922012%; 1990992%
 
-padroes = '^(13|22|21|23)|^1990111|^1922012|^1990992'
+# padroes = '^(13|22|21|23)|^1990111|^1922012|^1990992'
+padroes = '^(1321|2230|21|23)|^1990111|^1922012|^1990992'
 
 #%%
 df["PRIMARIO"] = "P"
@@ -82,13 +83,58 @@ relatorio
 
 #%%
 #===============================Relatório Etpa 4=====================================
-relatorio_2 = relatorio.pivot_table(index="MES", columns="ANO", values="Receita Líquida")
-relatorio_2.fillna(0)
+relatorio_2 = relatorio.pivot_table(index="MES", columns="ANO", values="Receita Líquida").fillna(0)
+relatorio_2
 
+#%%
 #===============================Relatório Etpa 4=====================================
 relatorio_2["VAR R$"] = relatorio_2[2025] - relatorio_2[2024] 
 relatorio_2
 
 #%%
-relatorio_2["VAR R$"] = relatorio_2["VAR R$"] - relatorio_2[2024] 
+relatorio_2["VAR %"] = relatorio_2["VAR R$"] / relatorio_2[2024] * 100
 relatorio_2
+
+#%%
+#===============================Relatório Etpa 5=====================================
+
+meses = {1: 'jan', 2: 'fev', 3: 'mar', 4: 'abr', 5: 'mai', 6: 'jun', 
+         7: 'jul', 8: 'ago', 9: 'set', 10: 'out', 11: 'nov', 12: 'dez'}
+
+#%%
+relatorio_2.index = relatorio_2.index.map(meses)
+relatorio_2.index
+
+#%%
+relatorio_2
+#%%
+#===============================Relatório Etpa 6=====================================
+
+total_receita_2024 = relatorio_2[2024].sum()
+total_receita_2025 = relatorio_2[2025].sum()
+
+#%%
+total_variacao_rs = relatorio_2["VAR R$"].sum()
+total_variacao_per = (total_variacao_rs / total_receita_2024) * 100
+
+#%%
+relatorio_2.loc["Total"] = [total_receita_2024, total_receita_2025, total_variacao_rs, total_variacao_per]
+
+#%%
+relatorio_2
+
+#%%
+#===============================Relatório Validação=====================================
+df
+
+#%%
+rpps_analise = df[df["RPPS"] == "Sim"]
+
+#%%
+rpps_analise["COD_FONTE_MAE_RPPS"].value_counts()
+
+#%%
+relatorio_2
+
+#%%
+# relatorio_2.to_excel("receitas.xlsx")

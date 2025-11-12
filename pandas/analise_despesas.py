@@ -187,4 +187,4 @@ tabela.loc["Total"] = [total_2024, total_2025, total_variacao_rs, total_variacao
 tabela
 
 #%%
-tabela.to_excel("base.xlsx")
+# tabela.to_excel("base.xlsx")
