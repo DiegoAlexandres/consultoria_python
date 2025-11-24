@@ -53,7 +53,7 @@ df["RPPS"] = "Não"
 df.head()
 
 #%%
-codigo_rpps = [1801261, 2801261, 1802262, 2802262, 1802202, 2802202]
+codigo_rpps = [1801261, 2801261, 1800262, 2800262, 1802202, 2802202]
 
 #%%
 df.loc[df["COD_FONTE_MAE"].isin(codigo_rpps), "RPPS"] = "Sim"
@@ -188,3 +188,9 @@ tabela
 
 #%%
 # tabela.to_excel("base.xlsx")
+
+#%%
+tabela.info()
+
+#%%
+df.info()
