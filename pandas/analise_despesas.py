@@ -106,7 +106,6 @@ df.head()
 #%%
 df["PRIMARIO?"].unique()
 
-
 #%%
 grupo_2 = df[df["COD_GRUPO"] == "2"]
 

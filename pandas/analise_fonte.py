@@ -150,7 +150,6 @@ milhar(df_final)
 #%%
 type(df_final)
 
-
 #%%
 teste = milhar(df_final)
 teste
