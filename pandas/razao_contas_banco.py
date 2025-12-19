@@ -13,7 +13,9 @@ df.info()
 
 #%%
 #==============================Etapa 0==============================
-df["COCONTACONTABIL"] = df["COCONTACONTABIL"].astype(str)
+colunas = ["COCONTACONTABIL", "DALANCAMENTO"]
+
+df[colunas] = df[colunas].astype(str)
 
 #%%
 #==============================Etapa 1==============================
@@ -48,3 +50,34 @@ contas = ["1111130010000", "1111130020000"]
 df.loc[df["COCONTACONTABIL"].isin(contas), "BANCO"] = "Agente Arrecadador"
 df.tail()
 
+#==============================Etapa 4==============================
+df["DALANCAMENTO"] = df["DALANCAMENTO"].str.replace("00$", "01", regex=True)
+df.head()
+
+#%%
+#==============================Etapa 3==============================
+df["DALANCAMENTO"] = pd.to_datetime(df["DALANCAMENTO"], format="%Y%m%d", errors="coerce")
+df.head()
+
+#%%
+#==============================Etapa 5 a 9==============================
+colunas_2 = ["UGDOC", "GESTAODOC", "NUDOCUMENTO", "COEVENTO", "NOEVENTO"]
+df[colunas_2] = df[colunas_2].astype(str)
+
+#%%
+df[colunas_2] = df[colunas_2].replace("nan", "0000").fillna("0000")
+df.head()
+
+#%%
+df["UGDOC"].value_counts()
+
+#==============================Etapa 10==============================
+df["ANO"] = df["DALANCAMENTO"].dt.year
+df.head()
+
+#%%
+fr_25 = df[df["ANO"] == 2025].groupby("FR")["VALANCAMENTO"].sum().reset_index()
+fr_25
+
+#%%
+fr_25["VALANCAMENTO"].sum()
