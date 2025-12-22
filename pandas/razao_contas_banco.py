@@ -80,4 +80,31 @@ fr_25 = df[df["ANO"] == 2025].groupby("FR")["VALANCAMENTO"].sum().reset_index()
 fr_25
 
 #%%
-fr_25["VALANCAMENTO"].sum()
+saldo_bancario_25 = fr_25["VALANCAMENTO"].sum()
+saldo_bancario_25
+
+#%%
+#==============================Etapa 11==============================
+filtro_dia_31 = df[df["DALANCAMENTO"] == "2025-01-31"]
+filtro_dia_31
+
+#%%
+fluxo_dia_31 = filtro_dia_31.groupby("FR")["VALANCAMENTO"].sum().reset_index()
+fluxo_dia_31 = fluxo_dia_31["VALANCAMENTO"]
+
+fluxo_dia_31
+
+#%%
+fr_25["Saldo Inicial"] = saldo_bancario_25 - fluxo_dia_31
+
+#%%
+fr_25
+
+#%%
+saldo_bancario_25
+
+#Saldo Final - Qual o saldo final do dia 20? Res: Primeiro dia do ano até o dia do filtro (Dia 20) - classificado FR
+#Saldo Inicial é Saldo Final - 1 dia (Até dia 19) - classificado FR
+
+#Selecionando dia 20
+#Saldo inicial (Dia anterior - (Dia 1 a 19)) - Fluxo de Caixa (Dia Selecionado (Só dia 20)) - Saldo Final (Saldo do dia Selecionado (Dia 1 a 20))
