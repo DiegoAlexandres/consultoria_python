@@ -108,3 +108,6 @@ saldo_bancario_25
 
 #Selecionando dia 20
 #Saldo inicial (Dia anterior - (Dia 1 a 19)) - Fluxo de Caixa (Dia Selecionado (Só dia 20)) - Saldo Final (Saldo do dia Selecionado (Dia 1 a 20))
+
+#%%
+#==============================Etapa Análise Dinamica==============================
