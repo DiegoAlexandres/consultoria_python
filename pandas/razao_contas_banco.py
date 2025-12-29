@@ -111,3 +111,91 @@ saldo_bancario_25
 
 #%%
 #==============================Etapa Análise Dinamica==============================
+dia_analise = pd.to_datetime("2025-01-31")
+dia_analise
+
+#%%
+df.head()
+
+#%%
+df_escopo = df[
+    (df["DALANCAMENTO"].dt.year == 2025) &
+    (df["DALANCAMENTO"] <= dia_analise)
+].copy()
+
+#%%
+df_escopo["DALANCAMENTO"].value_counts().sort_index()
+
+#%%
+#==============================Criando o Saldo Inicial==============================
+saldo_inicial = df_escopo[df_escopo["DALANCAMENTO"] < dia_analise].groupby("FR")["VALANCAMENTO"].sum().reset_index(name="Saldo Incial")
+
+#%%
+saldo_inicial
+
+#%%
+#==============================Criando Fluxo de Caixa==============================
+fluxo_caixa = df_escopo[df_escopo["DALANCAMENTO"] == dia_analise].groupby("FR")["VALANCAMENTO"].sum().reset_index(name="Fluxo Caixa")
+fluxo_caixa
+
+#%%
+#==============================Criando o Saldo Final==============================
+saldo_final = df_escopo.groupby("FR")["VALANCAMENTO"].sum().reset_index(name="Saldo Final")
+saldo_final
+
+#%%
+#==============================Relatório==============================
+frs_unicos = pd.DataFrame(df_escopo["FR"].unique(), columns=["FR"])
+frs_unicos
+
+#%%
+relatorio = frs_unicos.merge(saldo_inicial, on="FR", how="left")
+
+#%%
+relatorio = relatorio.merge(fluxo_caixa, on="FR", how="left")
+
+#%%
+relatorio = relatorio.merge(saldo_final, on="FR", how="left")
+
+#%%
+relatorio = relatorio.fillna(0)
+
+#%%
+relatorio
+
+#%%
+#==============================Linha de Totais==============================
+colunas_totais = ["Saldo Incial", "Fluxo Caixa", "Saldo Final"]
+
+#%%
+soma = relatorio[colunas_totais].sum()
+
+#%%
+soma
+
+#%%
+linha_total = pd.DataFrame(soma).T
+linha_total
+
+#%%
+linha_total["FR"] = "Total"
+
+#%%
+linha_total
+
+#%%
+relatorio_final = pd.concat([relatorio, linha_total], ignore_index=True)
+
+#%%
+relatorio_final
+
+#%%
+def milhar(df):
+    return df.style.format(
+        precision=2,
+        decimal=",",
+        thousands="."
+    )
+
+#%%
+milhar(relatorio_final)
